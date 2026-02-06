@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <title>3D Mapa - Vkládání modelů</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- maplibre-gl -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/maplibre-gl@5.8.0/dist/maplibre-gl.css"
+    />
+    <script src="https://unpkg.com/maplibre-gl@5.8.0/dist/maplibre-gl.js"></script>
+    
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- mapa -->
+    <div id="map"></div>
+
+    <!-- kontrolní panel -->
+    <div class="controls">
+      <h3>🗺️ 3D Mapa</h3>
+      
+      <div class="section">
+        <label>Mapová vrstva:</label>
+        <select id="map-style">
+          <option value="satellite">🛰️ Satelitní</option>
+          <option value="osm">🗺️ OpenStreetMap</option>
+        </select>
+      </div>
+      
+      <div class="section">
+        <button id="add-model" class="btn-primary">📍 Přidat 3D model</button>
+        <p class="hint">Klikněte na tlačítko, pak na mapu</p>
+      </div>
+      
+      <div class="section">
+        <button id="clear-all" class="btn-danger">🗑️ Vymazat vše</button>
+      </div>
+    </div>
+
+    <!-- skripty -->
+    <script src="./app.js"></script>
+  </body>
+</html>
