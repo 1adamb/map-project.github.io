@@ -1,0 +1,2 @@
+const maptilerApiKey = "";
+const mapboxApiKey = "";
