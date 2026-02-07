@@ -1,46 +1,63 @@
 <!DOCTYPE html>
 <html lang="cs">
-  <head>
-    <title>3D Mapa - Vkládání modelů</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+    <title>České Památky 3D</title>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:description" content="Interaktivní 3D mapa českých památek" />
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@5.17.0/dist/maplibre-gl.css' />
+    <link rel='stylesheet' href='style.css' />
+    <script src='https://unpkg.com/maplibre-gl@5.17.0/dist/maplibre-gl.js'></script>
+</head>
+<body>
+<script type="importmap">
+    {
+        "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+        }
+    }
+</script>
 
-    <!-- maplibre-gl -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/maplibre-gl@5.8.0/dist/maplibre-gl.css"
-    />
-    <script src="https://unpkg.com/maplibre-gl@5.8.0/dist/maplibre-gl.js"></script>
-    
-    <link rel="stylesheet" href="./style.css" />
-  </head>
-  <body>
-    <!-- mapa -->
-    <div id="map"></div>
+<div id="map"></div>
 
-    <!-- kontrolní panel -->
-    <div class="controls">
-      <h3>🗺️ 3D Mapa</h3>
-      
-      <div class="section">
-        <label>Mapová vrstva:</label>
-        <select id="map-style">
-          <option value="satellite">🛰️ Satelitní</option>
-          <option value="osm">🗺️ OpenStreetMap</option>
-        </select>
-      </div>
-      
-      <div class="section">
-        <button id="add-model" class="btn-primary">📍 Přidat 3D model</button>
-        <p class="hint">Klikněte na tlačítko, pak na mapu</p>
-      </div>
-      
-      <div class="section">
-        <button id="clear-all" class="btn-danger">🗑️ Vymazat vše</button>
-      </div>
+<!-- Boční panel se seznamem památek -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h2>🏰 České Památky</h2>
+        <p class="subtitle">Interaktivní 3D prohlídka</p>
     </div>
+    
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Hledat památku...">
+    </div>
+    
+    <div class="monuments-container">
+        <div id="monumentsList" class="monuments-list">
+            <!-- Seznam památek se naplní automaticky -->
+            <div class="loading">Načítání památek...</div>
+        </div>
+    </div>
+    
+    <div class="sidebar-footer">
+        <button id="resetView" class="btn-reset">🌍 Reset pohledu</button>
+        <div id="status" class="status"></div>
+    </div>
+</div>
 
-    <!-- skripty -->
-    <script src="./app.js"></script>
-  </body>
+<!-- Informační panel -->
+<div class="info-panel">
+    <div class="info-content">
+        <strong>Ovládání:</strong>
+        <ul>
+            <li>🖱️ Tažení myší = pohyb po mapě</li>
+            <li>🎯 Kliknutí = detail památky</li>
+            <li>📜 Kolečko = přiblížení/oddálení</li>
+            <li>⌨️ Ctrl + tažení = natočení kamery</li>
+        </ul>
+    </div>
+</div>
+
+<script type="module" src="./app.js"></script>
+</body>
 </html>
