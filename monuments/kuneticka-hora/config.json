@@ -1,0 +1,22 @@
+{
+  "name": "Státní hrad Kunětická hora",
+  "description": "Dominantní pozdně gotický hrad stojící na osamělém znělcovém vrchu v Polabí. Významně jej přestavěli Pernštejnové na přelomu 15. a 16. století, čímž vznikl unikátní systém opevnění s dělostřeleckými rondely. Ve 20. století prošel obnovou pod vedením architekta Dušana Jurkoviče a je známý jako dějiště seriálu Arabela.",
+  "location": {
+    "longitude": 15.8128,
+    "latitude": 50.0804,
+    "altitude": -50
+  },
+  "model": {
+    "file": "model-kuneticka-hora.glb",
+    "scale": 40,
+    "rotation": 100,
+    "downloadable": false,
+    "minZoom": 10
+  },
+  "info": {
+    "category": "hrad / národní kulturní památka",
+    "region": "Pardubický kraj",
+    "year": "1421",
+    "website": "https://www.hrad-kunetickahora.cz"
+  }
+}
