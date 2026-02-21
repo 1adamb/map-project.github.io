@@ -1,0 +1,22 @@
+{
+  "name": "Muzeum východních Čech v Hradci Králové",
+  "description": "Monumentální secesní budova postavená v letech 1909–1912 podle návrhu architekta Jana Kotěry. Je považována za vrcholné dílo české moderní architektury a jedinou národní kulturní památku ve městě. Fasádu zdobí dvě monumentální sedící postavy žen (symbolizující Historii a Průmysl) a interiér vyniká unikátním spojením účelnosti a uměleckého řemesla.",
+  "location": {
+    "longitude": 15.828985,
+    "latitude": 50.211684,
+    "altitude": 4
+  },
+  "model": {
+    "file": "muzeum1.glb",
+    "scale": 55,
+    "rotation": -82,
+    "downloadable": true,
+    "minZoom": 10
+  },
+  "info": {
+    "category": "muzeum / národní kulturní památka",
+    "region": "Královéhradecký kraj",
+    "year": "1880",
+    "website": "https://www.muzeumhk.cz"
+  }
+}
