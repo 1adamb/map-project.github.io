@@ -7,7 +7,7 @@
     "altitude": 20
   },
   "model": {
-    "file": "prague_castle_prague_czech_republic.glb",
+    "file": "prazsky-hrad-model-decimated.glb",
     "scale": 26,
     "rotation": 16,
     "downloadable": false,
