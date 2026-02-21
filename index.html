@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-    <title>České Památky 3D</title>
+    <title>ZBOŘENO CZ</title>
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:description" content="Interaktivní 3D mapa českých památek" />
@@ -24,12 +24,20 @@
 <!-- Boční panel se seznamem památek -->
 <div class="sidebar">
     <div class="sidebar-header">
-        <h2>🏰 České Památky</h2>
-        <p class="subtitle">Interaktivní 3D prohlídka</p>
+        <h2>České Památky</h2>
+        <p class="subtitle">3D pohled na památky</p>
+    </div>
+    
+    <div class="map-style-selector">
+        <label for="mapStyle">Styl mapy:</label>
+        <select id="mapStyle">
+            <option value="tourist" selected>Turistická</option>
+            <option value="satellite">Satelitní</option>
+        </select>
     </div>
     
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="🔍 Hledat památku...">
+        <input type="text" id="searchInput" placeholder="Hledat památku...">
     </div>
     
     <div class="monuments-container">
@@ -40,7 +48,7 @@
     </div>
     
     <div class="sidebar-footer">
-        <button id="resetView" class="btn-reset">🌍 Reset pohledu</button>
+        <button id="resetView" class="btn-reset">Reset pohledu</button>
         <div id="status" class="status"></div>
     </div>
 </div>
@@ -50,10 +58,10 @@
     <div class="info-content">
         <strong>Ovládání:</strong>
         <ul>
-            <li>🖱️ Tažení myší = pohyb po mapě</li>
-            <li>🎯 Kliknutí = detail památky</li>
-            <li>📜 Kolečko = přiblížení/oddálení</li>
-            <li>⌨️ Ctrl + tažení = natočení kamery</li>
+            <li>Tažení myší = pohyb po mapě</li>
+            <li>Kliknutí = detail památky</li>
+            <li>Kolečko = přiblížení/oddálení</li>
+            <li>Ctrl + tažení = natočení kamery</li>
         </ul>
     </div>
 </div>
