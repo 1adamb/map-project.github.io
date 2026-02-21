@@ -1,0 +1,22 @@
+{
+  "name": "Pražský hrad",
+  "description": "Nejvýznamnější český hrad a symbol státnosti, založený kolem roku 880 knížetem Bořivojem z rodu Přemyslovců. Je zapsán v Guinnessově knize rekordů jako největší souvislý hradní komplex na světě a je sídlem českých králů, císařů a prezidentů.",
+  "location": {
+    "longitude": 14.40032,
+    "latitude": 50.09058,
+    "altitude": 20
+  },
+  "model": {
+    "file": "prague_castle_prague_czech_republic.glb",
+    "scale": 26,
+    "rotation": 16,
+    "downloadable": false,
+    "minZoom": 10
+  },
+  "info": {
+    "category": "hrad / památka UNESCO",
+    "region": "Praha",
+    "year": "880 (založen)",
+    "website": "https://www.hrad.cz"
+  }
+}
