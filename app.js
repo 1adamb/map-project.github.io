@@ -1,3 +1,28 @@
+/**
+ * České Památky 3D - Interaktivní Mapová Aplikace
+ * Verze: 1.4.0
+ * Datum: 7. února 2025
+ * 
+ * Změny ve verzi 1.4.0:
+ * - PŘIDÁNO: LOD (Level of Detail) - skrývání vzdálených modelů (parametr minZoom)
+ * - Optimalizace výkonu pro velké množství památek
+ * 
+ * Změny ve verzi 1.3.0:
+ * - PŘIDÁNO: Podmíněné stahování modelů (parametr downloadable)
+ * - ZMĚNĚNO: Výchozí mapa je nyní turistická (OpenStreetMap)
+ * - ODSTRANĚNO: Hiking mapa
+ * - OPRAVENO: Bug s duplikací památek při přepnutí mapy
+ * 
+ * Změny ve verzi 1.2.0:
+ * - PŘIDÁNO: Přepínání mezi satelitní a turistickou mapou
+ * - ZMĚNĚNO: Rotace modelů nyní funguje kolem vertikální osy Y
+ * 
+ * Změny ve verzi 1.1.0:
+ * - OPRAVENO: Bug s výškou modelů na 3D terénu
+ * - PŘIDÁNO: Odkaz na stažení 3D modelu v popupu
+ * - Automatická korekce altitude podle nadmořské výšky terénu
+ */
+
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
@@ -10,6 +35,44 @@ const map = new maplibregl.Map({
   maxPitch: 85,
   bearing: 0,
   style: {
+    version: 8,
+    sources: {
+      osm: {
+        type: "raster",
+        tiles: [
+          "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        ],
+        tileSize: 256,
+        attribution: "© OpenStreetMap contributors",
+      },
+      terrainSource: {
+        type: "raster-dem",
+        tiles: [
+          "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
+        ],
+        encoding: "terrarium",
+        tileSize: 256,
+        maxzoom: 15,
+        attribution: "AWS Terrain Tiles",
+      },
+    },
+    layers: [
+      {
+        id: "osm",
+        type: "raster",
+        source: "osm",
+      },
+    ],
+    terrain: {
+      source: "terrainSource",
+      exaggeration: 1.1,
+    },
+  },
+});
+
+// Map styles configuration
+const mapStyles = {
+  satellite: {
     version: 8,
     sources: {
       satellite: {
@@ -43,7 +106,41 @@ const map = new maplibregl.Map({
       exaggeration: 1.1,
     },
   },
-});
+  tourist: {
+    version: 8,
+    sources: {
+      osm: {
+        type: "raster",
+        tiles: [
+          "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        ],
+        tileSize: 256,
+        attribution: "© OpenStreetMap contributors",
+      },
+      terrainSource: {
+        type: "raster-dem",
+        tiles: [
+          "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
+        ],
+        encoding: "terrarium",
+        tileSize: 256,
+        maxzoom: 15,
+        attribution: "AWS Terrain Tiles",
+      },
+    },
+    layers: [
+      {
+        id: "osm",
+        type: "raster",
+        source: "osm",
+      },
+    ],
+    terrain: {
+      source: "terrainSource",
+      exaggeration: 1.1,
+    },
+  },
+};
 
 map.on("style.load", function () {
   map.setProjection({ type: "globe" });
@@ -63,6 +160,7 @@ const monuments = [];
 const monumentLayers = new Map();
 const monumentMarkers = new Map();
 
+let monumentsLoaded = false;
 // Funkce pro vytvoření 3D vrstvy pro památku
 function createMonumentLayer(monument, monumentId) {
   return {
@@ -122,15 +220,35 @@ function createMonumentLayer(monument, monumentId) {
     
     render(gl, args) {
       const { location, model } = this.monument;
+      
+      // Distance-based visibility (LOD)
+      const currentZoom = map.getZoom();
+      const minZoom = model.minZoom !== undefined ? model.minZoom : 8;
+      
+      // Hide model if camera is too far (zoom too low)
+      if (currentZoom < minZoom) {
+        // Model is hidden - don't render
+        return;
+      }
+      
+      // Get terrain elevation at this point to fix altitude bug
+      let terrainElevation = 0;
+      if (map.getTerrain()) {
+        terrainElevation = map.queryTerrainElevation([location.longitude, location.latitude]) || 0;
+      }
+      
+      // Add terrain elevation to altitude so model sits on terrain surface
+      const actualAltitude = location.altitude + terrainElevation;
+      
       const modelMatrix = map.transform.getMatrixForModel(
         [location.longitude, location.latitude],
-        location.altitude
+        actualAltitude
       );
       
       const m = new THREE.Matrix4().fromArray(args.defaultProjectionData.mainMatrix);
       const l = new THREE.Matrix4().fromArray(modelMatrix)
         .scale(new THREE.Vector3(model.scale, model.scale, model.scale))
-        .multiply(new THREE.Matrix4().makeRotationZ(model.rotation * Math.PI / 180));
+        .multiply(new THREE.Matrix4().makeRotationY(model.rotation * Math.PI / 180));
 
       this.camera.projectionMatrix = m.multiply(l);
       this.renderer.resetState();
@@ -142,7 +260,13 @@ function createMonumentLayer(monument, monumentId) {
 
 // Funkce pro vytvoření markeru pro památku
 function createMonumentMarker(monument, monumentId) {
-  const { location, name, description, info } = monument;
+  const { location, name, description, info, model } = monument;
+  
+  // URL to the model file
+  const modelUrl = `monuments/${monumentId}/${monument.model.file}`;
+  
+  // Check if download is allowed (default to false if not specified)
+  const downloadAllowed = model.downloadable !== undefined ? model.downloadable : false;
   
   // Vytvoření HTML obsahu pro popup
   const popupContent = `
@@ -153,7 +277,8 @@ function createMonumentMarker(monument, monumentId) {
         <div><strong>Kategorie:</strong> ${info.category}</div>
         <div><strong>Region:</strong> ${info.region}</div>
         <div><strong>Rok:</strong> ${info.year}</div>
-        ${info.website ? `<div><a href="${info.website}" target="_blank" style="color: #2196F3;">Více informací →</a></div>` : ''}
+        ${info.website ? `<div style="margin-top: 8px;"><a href="${info.website}" target="_blank" style="color: #b47200ff; text-decoration: none;">Webové stránky →</a></div>` : ''}
+        ${downloadAllowed ? `<div style="margin-top: 4px;"><a href="${modelUrl}" download style="color: #956400ff; text-decoration: none;">Stáhnout 3D model →</a></div>` : ''}
       </div>
     </div>
   `;
@@ -161,7 +286,7 @@ function createMonumentMarker(monument, monumentId) {
   const popup = new maplibregl.Popup({ offset: 25 })
     .setHTML(popupContent);
 
-  const marker = new maplibregl.Marker({ color: '#2196F3' })
+  const marker = new maplibregl.Marker({ color: '#ff8522ff' })
     .setLngLat([location.longitude, location.latitude])
     .setPopup(popup)
     .addTo(map);
@@ -171,6 +296,10 @@ function createMonumentMarker(monument, monumentId) {
 
 // Hlavní funkce pro načtení všech památek
 async function loadMonuments() {
+  if (monumentsLoaded) {
+    console.log('Monuments already loaded, skipping...');
+    return;
+  }
   try {
     updateStatus('Načítám seznam památek...', 'info');
     
@@ -211,6 +340,8 @@ async function loadMonuments() {
     
     updateMonumentsList();
     updateStatus(`✅ Načteno ${monuments.length} památek`, 'success');
+
+    monumentsLoaded = true;
     
   } catch (error) {
     console.error('❌ Error loading monuments:', error);
@@ -283,6 +414,42 @@ document.getElementById('resetView').addEventListener('click', () => {
     pitch: 60,
     bearing: 0,
     duration: 2000
+  });
+});
+
+// Přepínání stylu mapy
+document.getElementById('mapStyle').addEventListener('change', (e) => {
+  const selectedStyle = e.target.value;
+  const currentCenter = map.getCenter();
+  const currentZoom = map.getZoom();
+  const currentPitch = map.getPitch();
+  const currentBearing = map.getBearing();
+  
+  // Změna stylu
+  map.setStyle(mapStyles[selectedStyle]);
+  
+  // Po načtení nového stylu obnovit stav
+  map.once('style.load', () => {
+    // Obnovit projekci
+    map.setProjection({ type: "globe" });
+    
+    // Obnovit pozici
+    map.jumpTo({
+      center: currentCenter,
+      zoom: currentZoom,
+      pitch: currentPitch,
+      bearing: currentBearing
+    });
+    
+    // Znovu přidat 3D vrstvy památek - kontrola existence aby se předešlo duplikaci
+    monumentLayers.forEach(layer => {
+      // Zkontrolovat, jestli vrstva už existuje
+      if (!map.getLayer(layer.id)) {
+        map.addLayer(layer);
+      }
+    });
+    
+    updateStatus(`Styl mapy změněn: ${selectedStyle === 'satellite' ? 'Satelitní' : 'Turistická'}`, 'success');
   });
 });
 
