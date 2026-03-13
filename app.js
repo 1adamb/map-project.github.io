@@ -31,7 +31,7 @@ const map = new maplibregl.Map({
   container: "map",
   center: [15.5, 49.8], // Střed ČR
   zoom: 7,
-  pitch: 60,
+  pitch: 0,
   maxPitch: 85,
   bearing: 0,
   style: {
@@ -411,7 +411,7 @@ document.getElementById('resetView').addEventListener('click', () => {
   map.flyTo({
     center: [15.5, 49.8],
     zoom: 7,
-    pitch: 60,
+    pitch: 0,
     bearing: 0,
     duration: 2000
   });
