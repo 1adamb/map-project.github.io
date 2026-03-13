@@ -1,0 +1,22 @@
+{
+  "name": "Státní zámek Náchod",
+  "description": "Rozsáhlý zámecký komplex tyčící se nad historickým centrem města. Původně gotický hrad založený v polovině 13. století byl v 16. a 17. století přestavěn na renesanční a barokní sídlo. Proslul zejména jako rezidence rodů Piccolominiů a Kuronských. Nabízí unikátní tapiserie a medvědy v zámeckém příkopu.",
+  "location": {
+    "longitude": 16.1615,
+    "latitude": 50.4192,
+    "altitude": -100
+  },
+  "model": {
+    "file": "Nachod.glb",
+    "scale": 1,
+    "rotation": 0,
+    "downloadable": false,
+    "minZoom": 10
+  },
+  "info": {
+    "category": "zámek / národní kulturní památka",
+    "region": "Královéhradecký kraj",
+    "year": "1254",
+    "website": "https://www.zamek-nachod.cz"
+  }
+}
