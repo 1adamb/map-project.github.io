@@ -1,0 +1,22 @@
+{
+  "name": "Zřícenina hradu Kumburk",
+  "description": "Malebná zřícenina gotického hradu ze 14. století, která se tyčí na čedičovém vrchu nad Syřenovem. Hrad byl známý svou nedobytností a unikátním systémem opevnění. V 17. století byl na příkaz císaře pobořen, aby nesloužil jako opěrný bod nepřátel. Nabízí jednu z nejkrásnějších vyhlídek na Český ráj a Krkonoše.",
+  "location": {
+    "longitude": 15.44438,
+    "latitude": 50.4943,
+    "altitude": -55
+  },
+  "model": {
+    "file": "Kumburg.glb",
+    "scale": 80,
+    "rotation": 40,
+    "downloadable": false,
+    "minZoom": 10
+  },
+  "info": {
+    "category": "zřícenina hradu",
+    "region": "Královéhradecký kraj",
+    "year": "1325",
+    "website": "https://www.kumburk.cz"
+  }
+}
