@@ -1,0 +1,22 @@
+{
+  "name": "Kost State Castle",
+  "description": "One of the best-preserved Gothic castles in Czechia, uniquely located in a valley on a sandstone spur. Its dominant feature is the White Tower with an irregular trapezoidal ground plan, designed for better artillery defense. The castle was never conquered and is associated with the Kinsky family.",
+  "location": {
+    "longitude": 15.1350,
+    "latitude": 50.4902,
+    "altitude": 0
+  },
+  "model": {
+    "file": "Kost.glb",
+    "scale": 50,
+    "rotation": 0,
+    "downloadable": false,
+    "minZoom": 10
+  },
+  "info": {
+    "category": "castle",
+    "region": "Hradec Králové Region",
+    "year": "1349",
+    "website": "https://www.hrad-kost.cz"
+  }
+}

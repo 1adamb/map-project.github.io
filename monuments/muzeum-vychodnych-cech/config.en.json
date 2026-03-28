@@ -1,0 +1,22 @@
+{
+  "name": "Museum of Eastern Bohemia in Hradec Králové",
+  "description": "A monumental Art Nouveau building constructed between 1909 and 1912, designed by architect Jan Kotěra. It is considered a peak work of Czech modern architecture and the only national cultural monument in the city. The façade is decorated with two monumental seated female figures (symbolizing History and Industry), while the interior stands out for its unique blend of functionality and craftsmanship.",
+  "location": {
+    "longitude": 15.828985,
+    "latitude": 50.211684,
+    "altitude": 4
+  },
+  "model": {
+    "file": "muzeum1.glb",
+    "scale": 55,
+    "rotation": -82,
+    "downloadable": true,
+    "minZoom": 10
+  },
+  "info": {
+    "category": "museum / national cultural monument",
+    "region": "Hradec Králové Region",
+    "year": "1880",
+    "website": "https://www.muzeumhk.cz"
+  }
+}
