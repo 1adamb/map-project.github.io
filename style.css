@@ -17,6 +17,54 @@ body {
   height: 100%;
 }
 
+.mobile-sidebar-toggle {
+  display: none;
+  border: none;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1100;
+}
+
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.header-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.language-select {
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-weight: 600;
+}
+
+.language-select option {
+  color: #222;
+}
+
+.mobile-sidebar-close {
+  display: none;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
 /* Boční panel */
 .sidebar {
   position: absolute;
@@ -295,12 +343,46 @@ body {
 
 /* Responsive design */
 @media (max-width: 768px) {
+  body {
+    height: 100dvh;
+  }
+
+  .mobile-sidebar-toggle {
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -48px;
+    bottom: auto;
+  }
+
   .sidebar {
     width: 100%;
-    height: 40vh;
+    height: min(72vh, 560px);
     top: auto;
     bottom: 0;
     border-radius: 20px 20px 0 0;
+    transition: transform 0.25s ease;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .sidebar.sidebar-collapsed {
+    transform: translateY(calc(100% - 74px));
+  }
+
+  .sidebar.sidebar-collapsed .monuments-container,
+  .sidebar.sidebar-collapsed .sidebar-footer,
+  .sidebar.sidebar-collapsed .map-style-selector,
+  .sidebar.sidebar-collapsed .search-box {
+    display: none;
+  }
+
+  .sidebar.sidebar-collapsed .sidebar-header {
+    padding: 10px 14px;
+  }
+
+  .mobile-sidebar-close {
+    display: inline-block;
   }
   
   .info-panel {
