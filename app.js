@@ -186,11 +186,6 @@ const i18n = {
     year: 'Rok',
     website: 'Webové stránky →',
     downloadModel: 'Stáhnout 3D model →',
-    controlsTitle: 'Ovládání:',
-    controlsPan: 'Tažení myší = pohyb po mapě',
-    controlsClick: 'Kliknutí = detail památky',
-    controlsZoom: 'Kolečko = přiblížení/oddálení',
-    controlsRotate: 'Ctrl + tažení = natočení kamery',
   },
   en: {
     title: 'Czech Monuments',
@@ -216,11 +211,6 @@ const i18n = {
     year: 'Year',
     website: 'Website →',
     downloadModel: 'Download 3D model →',
-    controlsTitle: 'Controls:',
-    controlsPan: 'Drag = move map',
-    controlsClick: 'Click = monument detail',
-    controlsZoom: 'Mouse wheel = zoom in/out',
-    controlsRotate: 'Ctrl + drag = camera rotate',
   }
 };
 
@@ -548,13 +538,13 @@ function updateMobileSidebarState() {
   if (!isMobile) {
     sidebar.classList.remove('sidebar-collapsed');
     mobileToggleButton.setAttribute('aria-expanded', 'true');
-    mobileToggleButton.textContent = t('openList');
+    mobileToggleButton.textContent = 'Seznam památek';
     return;
   }
 
   const collapsed = sidebar.classList.contains('sidebar-collapsed');
   mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
-  mobileToggleButton.textContent = collapsed ? t('openList') : t('hideList');
+  mobileToggleButton.textContent = collapsed ? 'Otevřít seznam' : 'Skrýt seznam';
 }
 
 if (mobileToggleButton && sidebar) {
@@ -563,79 +553,10 @@ if (mobileToggleButton && sidebar) {
   }
   updateMobileSidebarState();
 
-  const toggleSidebar = () => {
+  mobileToggleButton.addEventListener('click', () => {
     sidebar.classList.toggle('sidebar-collapsed');
     updateMobileSidebarState();
-  };
-
-  mobileToggleButton.addEventListener('click', toggleSidebar);
-  mobileToggleButton.addEventListener('touchend', (event) => {
-    event.preventDefault();
-    toggleSidebar();
-  }, { passive: false });
+  });
 
   window.addEventListener('resize', updateMobileSidebarState);
 }
-
-const mobileSidebarClose = document.getElementById('mobileSidebarClose');
-if (mobileSidebarClose && sidebar) {
-  const closeSidebar = () => {
-    if (window.matchMedia('(max-width: 768px)').matches) {
-      sidebar.classList.add('sidebar-collapsed');
-      updateMobileSidebarState();
-    }
-  };
-
-  mobileSidebarClose.addEventListener('click', closeSidebar);
-  mobileSidebarClose.addEventListener('touchend', (event) => {
-    event.preventDefault();
-    closeSidebar();
-  }, { passive: false });
-}
-
-function applyTranslations() {
-  document.querySelectorAll('[data-i18n]').forEach((element) => {
-    const key = element.getAttribute('data-i18n');
-    if (key && i18n[currentLanguage][key]) {
-      element.textContent = t(key);
-    }
-  });
-
-  document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => {
-    const key = element.getAttribute('data-i18n-placeholder');
-    if (key && i18n[currentLanguage][key]) {
-      element.placeholder = t(key);
-    }
-  });
-
-  updateMobileSidebarState();
-  updateMonumentsList();
-  monumentMarkers.forEach((marker) => marker.remove());
-  monumentMarkers.clear();
-  monuments.forEach((monument) => {
-    const marker = createMonumentMarker(monument, monument.id);
-    monumentMarkers.set(monument.id, marker);
-  });
-}
-
-const languageSelect = document.getElementById('languageSelect');
-if (languageSelect) {
-  const onLanguageChange = (e) => {
-    currentLanguage = e.target.value;
-    applyTranslations();
-  };
-
-  languageSelect.addEventListener('change', onLanguageChange);
-  languageSelect.addEventListener('input', onLanguageChange);
-}
-
-// Prevent map gestures from swallowing UI interactions
-if (sidebar) {
-  ['click', 'touchstart', 'touchend'].forEach((eventName) => {
-    sidebar.addEventListener(eventName, (event) => {
-      event.stopPropagation();
-    }, { passive: eventName === 'touchstart' });
-  });
-}
-
-applyTranslations();
