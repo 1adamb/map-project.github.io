@@ -467,3 +467,37 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
     }
   });
 });
+
+// Mobilní ovládání bočního panelu
+const mobileToggleButton = document.getElementById('mobileSidebarToggle');
+const sidebar = document.getElementById('sidebar');
+
+function updateMobileSidebarState() {
+  if (!mobileToggleButton || !sidebar) return;
+
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  if (!isMobile) {
+    sidebar.classList.remove('sidebar-collapsed');
+    mobileToggleButton.setAttribute('aria-expanded', 'true');
+    mobileToggleButton.textContent = 'Seznam památek';
+    return;
+  }
+
+  const collapsed = sidebar.classList.contains('sidebar-collapsed');
+  mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
+  mobileToggleButton.textContent = collapsed ? 'Otevřít seznam' : 'Skrýt seznam';
+}
+
+if (mobileToggleButton && sidebar) {
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    sidebar.classList.add('sidebar-collapsed');
+  }
+  updateMobileSidebarState();
+
+  mobileToggleButton.addEventListener('click', () => {
+    sidebar.classList.toggle('sidebar-collapsed');
+    updateMobileSidebarState();
+  });
+
+  window.addEventListener('resize', updateMobileSidebarState);
+}
