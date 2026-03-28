@@ -22,33 +22,47 @@
 <div id="map"></div>
 
 <!-- Boční panel se seznamem památek -->
-<div class="sidebar">
+<div id="sidebar" class="sidebar">
+    <button id="mobileSidebarToggle" class="mobile-sidebar-toggle" aria-expanded="false" aria-controls="sidebar">
+        Otevřít seznam
+    </button>
     <div class="sidebar-header">
-        <h2>České Památky</h2>
-        <p class="subtitle">3D pohled na památky</p>
+        <div class="header-top-row">
+            <div>
+                <h2 data-i18n="title">České Památky</h2>
+                <p class="subtitle" data-i18n="subtitle">3D pohled na památky</p>
+            </div>
+            <div class="header-controls">
+                <select id="languageSelect" class="language-select" aria-label="Language">
+                    <option value="cs" selected>CZ</option>
+                    <option value="en">EN</option>
+                </select>
+                <button id="mobileSidebarClose" class="mobile-sidebar-close" type="button" data-i18n="closeList">Skrýt</button>
+            </div>
+        </div>
     </div>
     
     <div class="map-style-selector">
-        <label for="mapStyle">Styl mapy:</label>
+        <label for="mapStyle" data-i18n="mapStyleLabel">Styl mapy:</label>
         <select id="mapStyle">
-            <option value="tourist" selected>Turistická</option>
-            <option value="satellite">Satelitní</option>
+            <option value="tourist" selected data-i18n="mapStyleTourist">Turistická</option>
+            <option value="satellite" data-i18n="mapStyleSatellite">Satelitní</option>
         </select>
     </div>
     
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Hledat památku...">
+        <input type="text" id="searchInput" placeholder="Hledat památku..." data-i18n-placeholder="searchPlaceholder">
     </div>
     
     <div class="monuments-container">
         <div id="monumentsList" class="monuments-list">
             <!-- Seznam památek se naplní automaticky -->
-            <div class="loading">Načítání památek...</div>
+            <div class="loading" data-i18n="loadingMonuments">Načítání památek...</div>
         </div>
     </div>
     
     <div class="sidebar-footer">
-        <button id="resetView" class="btn-reset">Reset pohledu</button>
+        <button id="resetView" class="btn-reset" data-i18n="resetView">Reset pohledu</button>
         <div id="status" class="status"></div>
     </div>
 </div>
@@ -56,12 +70,12 @@
 <!-- Informační panel -->
 <div class="info-panel">
     <div class="info-content">
-        <strong>Ovládání:</strong>
+        <strong data-i18n="controlsTitle">Ovládání:</strong>
         <ul>
-            <li>Tažení myší = pohyb po mapě</li>
-            <li>Kliknutí = detail památky</li>
-            <li>Kolečko = přiblížení/oddálení</li>
-            <li>Ctrl + tažení = natočení kamery</li>
+            <li data-i18n="controlsPan">Tažení myší = pohyb po mapě</li>
+            <li data-i18n="controlsClick">Kliknutí = detail památky</li>
+            <li data-i18n="controlsZoom">Kolečko = přiblížení/oddálení</li>
+            <li data-i18n="controlsRotate">Ctrl + tažení = natočení kamery</li>
         </ul>
     </div>
 </div>

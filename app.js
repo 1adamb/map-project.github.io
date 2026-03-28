@@ -159,6 +159,75 @@ map.addControl(
 const monuments = [];
 const monumentLayers = new Map();
 const monumentMarkers = new Map();
+let currentLanguage = 'cs';
+
+const i18n = {
+  cs: {
+    title: 'České Památky',
+    subtitle: '3D pohled na památky',
+    mapStyleLabel: 'Styl mapy:',
+    mapStyleTourist: 'Turistická',
+    mapStyleSatellite: 'Satelitní',
+    searchPlaceholder: 'Hledat památku...',
+    loadingMonuments: 'Načítání památek...',
+    resetView: 'Reset pohledu',
+    closeList: 'Skrýt',
+    openList: 'Otevřít seznam',
+    hideList: 'Skrýt seznam',
+    loadingListStatus: 'Načítám seznam památek...',
+    foundCount: (count) => `Nalezeno ${count} památek`,
+    loadedItem: (name) => `Načteno: ${name}`,
+    loadError: (name) => `Chyba načítání: ${name}`,
+    loadedCount: (count) => `✅ Načteno ${count} památek`,
+    listLoadError: 'Chyba při načítání památek. Zkontrolujte strukturu souborů.',
+    mapStyleChanged: (style) => `Styl mapy změněn: ${style === 'satellite' ? 'Satelitní' : 'Turistická'}`,
+    category: 'Kategorie',
+    region: 'Region',
+    year: 'Rok',
+    website: 'Webové stránky →',
+    downloadModel: 'Stáhnout 3D model →',
+    controlsTitle: 'Ovládání:',
+    controlsPan: 'Tažení myší = pohyb po mapě',
+    controlsClick: 'Kliknutí = detail památky',
+    controlsZoom: 'Kolečko = přiblížení/oddálení',
+    controlsRotate: 'Ctrl + tažení = natočení kamery',
+  },
+  en: {
+    title: 'Czech Monuments',
+    subtitle: '3D monument map',
+    mapStyleLabel: 'Map style:',
+    mapStyleTourist: 'Tourist',
+    mapStyleSatellite: 'Satellite',
+    searchPlaceholder: 'Search monument...',
+    loadingMonuments: 'Loading monuments...',
+    resetView: 'Reset view',
+    closeList: 'Hide',
+    openList: 'Open list',
+    hideList: 'Hide list',
+    loadingListStatus: 'Loading monument list...',
+    foundCount: (count) => `${count} monuments found`,
+    loadedItem: (name) => `Loaded: ${name}`,
+    loadError: (name) => `Loading error: ${name}`,
+    loadedCount: (count) => `✅ Loaded ${count} monuments`,
+    listLoadError: 'Error loading monuments. Check the file structure.',
+    mapStyleChanged: (style) => `Map style changed: ${style === 'satellite' ? 'Satellite' : 'Tourist'}`,
+    category: 'Category',
+    region: 'Region',
+    year: 'Year',
+    website: 'Website →',
+    downloadModel: 'Download 3D model →',
+    controlsTitle: 'Controls:',
+    controlsPan: 'Drag = move map',
+    controlsClick: 'Click = monument detail',
+    controlsZoom: 'Mouse wheel = zoom in/out',
+    controlsRotate: 'Ctrl + drag = camera rotate',
+  }
+};
+
+function t(key, ...args) {
+  const entry = i18n[currentLanguage][key];
+  return typeof entry === 'function' ? entry(...args) : entry;
+}
 
 let monumentsLoaded = false;
 // Funkce pro vytvoření 3D vrstvy pro památku
@@ -197,7 +266,7 @@ function createMonumentLayer(monument, monumentId) {
         (gltf) => {
           this.modelGroup.add(gltf.scene);
           console.log(`✅ Model loaded: ${monument.name}`);
-          updateStatus(`Načteno: ${monument.name}`, 'success');
+          updateStatus(t('loadedItem', monument.name), 'success');
         },
         (xhr) => {
           const percent = Math.round((xhr.loaded / xhr.total) * 100);
@@ -205,7 +274,7 @@ function createMonumentLayer(monument, monumentId) {
         },
         (error) => {
           console.error(`❌ Error loading ${monument.name}:`, error);
-          updateStatus(`Chyba načítání: ${monument.name}`, 'error');
+          updateStatus(t('loadError', monument.name), 'error');
         }
       );
 
@@ -274,11 +343,11 @@ function createMonumentMarker(monument, monumentId) {
       <h3 style="margin: 0 0 8px 0; font-size: 16px; color: #333;">${name}</h3>
       <p style="margin: 0 0 8px 0; font-size: 13px; color: #666; line-height: 1.4;">${description}</p>
       <div style="font-size: 12px; color: #888;">
-        <div><strong>Kategorie:</strong> ${info.category}</div>
-        <div><strong>Region:</strong> ${info.region}</div>
-        <div><strong>Rok:</strong> ${info.year}</div>
-        ${info.website ? `<div style="margin-top: 8px;"><a href="${info.website}" target="_blank" style="color: #b47200ff; text-decoration: none;">Webové stránky →</a></div>` : ''}
-        ${downloadAllowed ? `<div style="margin-top: 4px;"><a href="${modelUrl}" download style="color: #956400ff; text-decoration: none;">Stáhnout 3D model →</a></div>` : ''}
+        <div><strong>${t('category')}:</strong> ${info.category}</div>
+        <div><strong>${t('region')}:</strong> ${info.region}</div>
+        <div><strong>${t('year')}:</strong> ${info.year}</div>
+        ${info.website ? `<div style="margin-top: 8px;"><a href="${info.website}" target="_blank" style="color: #b47200ff; text-decoration: none;">${t('website')}</a></div>` : ''}
+        ${downloadAllowed ? `<div style="margin-top: 4px;"><a href="${modelUrl}" download style="color: #956400ff; text-decoration: none;">${t('downloadModel')}</a></div>` : ''}
       </div>
     </div>
   `;
@@ -301,7 +370,7 @@ async function loadMonuments() {
     return;
   }
   try {
-    updateStatus('Načítám seznam památek...', 'info');
+    updateStatus(t('loadingListStatus'), 'info');
     
     // Načtení hlavního souboru se seznamem památek
     const response = await fetch('monuments/monuments.json');
@@ -312,7 +381,7 @@ async function loadMonuments() {
     const data = await response.json();
     const monumentIds = data.monuments;
     
-    updateStatus(`Nalezeno ${monumentIds.length} památek`, 'info');
+    updateStatus(t('foundCount', monumentIds.length), 'info');
     
     // Načtení konfigurace každé památky
     for (const monumentId of monumentIds) {
@@ -339,13 +408,13 @@ async function loadMonuments() {
     }
     
     updateMonumentsList();
-    updateStatus(`✅ Načteno ${monuments.length} památek`, 'success');
+    updateStatus(t('loadedCount', monuments.length), 'success');
 
     monumentsLoaded = true;
     
   } catch (error) {
     console.error('❌ Error loading monuments:', error);
-    updateStatus('Chyba při načítání památek. Zkontrolujte strukturu souborů.', 'error');
+    updateStatus(t('listLoadError'), 'error');
   }
 }
 
@@ -449,7 +518,7 @@ document.getElementById('mapStyle').addEventListener('change', (e) => {
       }
     });
     
-    updateStatus(`Styl mapy změněn: ${selectedStyle === 'satellite' ? 'Satelitní' : 'Turistická'}`, 'success');
+    updateStatus(t('mapStyleChanged', selectedStyle), 'success');
   });
 });
 
@@ -467,3 +536,106 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
     }
   });
 });
+
+// Mobilní ovládání bočního panelu
+const mobileToggleButton = document.getElementById('mobileSidebarToggle');
+const sidebar = document.getElementById('sidebar');
+
+function updateMobileSidebarState() {
+  if (!mobileToggleButton || !sidebar) return;
+
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  if (!isMobile) {
+    sidebar.classList.remove('sidebar-collapsed');
+    mobileToggleButton.setAttribute('aria-expanded', 'true');
+    mobileToggleButton.textContent = t('openList');
+    return;
+  }
+
+  const collapsed = sidebar.classList.contains('sidebar-collapsed');
+  mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
+  mobileToggleButton.textContent = collapsed ? t('openList') : t('hideList');
+}
+
+if (mobileToggleButton && sidebar) {
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    sidebar.classList.add('sidebar-collapsed');
+  }
+  updateMobileSidebarState();
+
+  const toggleSidebar = () => {
+    sidebar.classList.toggle('sidebar-collapsed');
+    updateMobileSidebarState();
+  };
+
+  mobileToggleButton.addEventListener('click', toggleSidebar);
+  mobileToggleButton.addEventListener('touchend', (event) => {
+    event.preventDefault();
+    toggleSidebar();
+  }, { passive: false });
+
+  window.addEventListener('resize', updateMobileSidebarState);
+}
+
+const mobileSidebarClose = document.getElementById('mobileSidebarClose');
+if (mobileSidebarClose && sidebar) {
+  const closeSidebar = () => {
+    if (window.matchMedia('(max-width: 768px)').matches) {
+      sidebar.classList.add('sidebar-collapsed');
+      updateMobileSidebarState();
+    }
+  };
+
+  mobileSidebarClose.addEventListener('click', closeSidebar);
+  mobileSidebarClose.addEventListener('touchend', (event) => {
+    event.preventDefault();
+    closeSidebar();
+  }, { passive: false });
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach((element) => {
+    const key = element.getAttribute('data-i18n');
+    if (key && i18n[currentLanguage][key]) {
+      element.textContent = t(key);
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => {
+    const key = element.getAttribute('data-i18n-placeholder');
+    if (key && i18n[currentLanguage][key]) {
+      element.placeholder = t(key);
+    }
+  });
+
+  updateMobileSidebarState();
+  updateMonumentsList();
+  monumentMarkers.forEach((marker) => marker.remove());
+  monumentMarkers.clear();
+  monuments.forEach((monument) => {
+    const marker = createMonumentMarker(monument, monument.id);
+    monumentMarkers.set(monument.id, marker);
+  });
+}
+
+const languageSelect = document.getElementById('languageSelect');
+if (languageSelect) {
+  const onLanguageChange = (e) => {
+    currentLanguage = e.target.value;
+    applyTranslations();
+  };
+
+  languageSelect.addEventListener('change', onLanguageChange);
+  languageSelect.addEventListener('input', onLanguageChange);
+}
+
+// Prevent map gestures from swallowing UI interactions
+if (sidebar) {
+  ['click', 'touchstart', 'touchend'].forEach((eventName) => {
+    sidebar.addEventListener(eventName, (event) => {
+      event.stopPropagation();
+    }, { passive: eventName === 'touchstart' });
+  });
+}
+
+applyTranslations();
