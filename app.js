@@ -538,13 +538,13 @@ function updateMobileSidebarState() {
   if (!isMobile) {
     sidebar.classList.remove('sidebar-collapsed');
     mobileToggleButton.setAttribute('aria-expanded', 'true');
-    mobileToggleButton.textContent = t('openList');
+    mobileToggleButton.textContent = 'Seznam památek';
     return;
   }
 
   const collapsed = sidebar.classList.contains('sidebar-collapsed');
   mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
-  mobileToggleButton.textContent = collapsed ? t('openList') : t('hideList');
+  mobileToggleButton.textContent = collapsed ? 'Otevřít seznam' : 'Skrýt seznam';
 }
 
 if (mobileToggleButton && sidebar) {
@@ -554,47 +554,9 @@ if (mobileToggleButton && sidebar) {
   updateMobileSidebarState();
 
   mobileToggleButton.addEventListener('click', () => {
-    sidebar.classList.remove('sidebar-collapsed');
+    sidebar.classList.toggle('sidebar-collapsed');
     updateMobileSidebarState();
   });
 
   window.addEventListener('resize', updateMobileSidebarState);
 }
-
-const mobileSidebarClose = document.getElementById('mobileSidebarClose');
-if (mobileSidebarClose && sidebar) {
-  mobileSidebarClose.addEventListener('click', () => {
-    if (window.matchMedia('(max-width: 768px)').matches) {
-      sidebar.classList.add('sidebar-collapsed');
-      updateMobileSidebarState();
-    }
-  });
-}
-
-function applyTranslations() {
-  document.querySelectorAll('[data-i18n]').forEach((element) => {
-    const key = element.getAttribute('data-i18n');
-    if (key && i18n[currentLanguage][key]) {
-      element.textContent = t(key);
-    }
-  });
-
-  document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => {
-    const key = element.getAttribute('data-i18n-placeholder');
-    if (key && i18n[currentLanguage][key]) {
-      element.placeholder = t(key);
-    }
-  });
-
-  updateMobileSidebarState();
-}
-
-const languageSelect = document.getElementById('languageSelect');
-if (languageSelect) {
-  languageSelect.addEventListener('change', (e) => {
-    currentLanguage = e.target.value;
-    applyTranslations();
-  });
-}
-
-applyTranslations();
