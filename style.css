@@ -19,8 +19,6 @@ body {
 
 .mobile-sidebar-toggle {
   display: none;
-  border: none;
-  background: transparent;
 }
 
 /* Boční panel */
@@ -306,29 +304,19 @@ body {
   }
 
   .mobile-sidebar-toggle {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    width: 100%;
-    background: #fff;
-    border-radius: 18px 18px 0 0;
-    padding: 10px 16px 8px;
-    color: #2f2f2f;
+    display: block;
+    position: absolute;
+    left: 50%;
+    bottom: calc(42vh + env(safe-area-inset-bottom, 0px) + 10px);
+    transform: translateX(-50%);
+    z-index: 1100;
+    border: none;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
     font-weight: 600;
-    cursor: pointer;
-  }
-
-  .mobile-sidebar-toggle .toggle-pill {
-    width: 44px;
-    height: 5px;
-    border-radius: 10px;
-    background: #cfcfcf;
-  }
-
-  .mobile-sidebar-toggle .toggle-label {
-    font-size: 14px;
+    padding: 10px 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
 
   .sidebar {
@@ -342,7 +330,7 @@ body {
   }
 
   .sidebar.sidebar-collapsed {
-    transform: translateY(calc(100% - 74px));
+    transform: translateY(calc(100% - 56px));
   }
 
   .sidebar.sidebar-collapsed .monuments-container,
@@ -353,11 +341,7 @@ body {
   }
 
   .sidebar.sidebar-collapsed .sidebar-header {
-    display: none;
-  }
-
-  .sidebar:not(.sidebar-collapsed) .mobile-sidebar-toggle {
-    border-bottom: 1px solid #ececec;
+    padding: 14px 20px;
   }
   
   .info-panel {

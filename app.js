@@ -479,17 +479,13 @@ function updateMobileSidebarState() {
   if (!isMobile) {
     sidebar.classList.remove('sidebar-collapsed');
     mobileToggleButton.setAttribute('aria-expanded', 'true');
-    const label = mobileToggleButton.querySelector('.toggle-label');
-    if (label) label.textContent = 'Památky v okolí';
+    mobileToggleButton.textContent = 'Seznam památek';
     return;
   }
 
   const collapsed = sidebar.classList.contains('sidebar-collapsed');
   mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
-  const label = mobileToggleButton.querySelector('.toggle-label');
-  if (label) {
-    label.textContent = collapsed ? 'Klepnutím otevřít seznam' : 'Klepnutím sbalit seznam';
-  }
+  mobileToggleButton.textContent = collapsed ? 'Otevřít seznam' : 'Skrýt seznam';
 }
 
 if (mobileToggleButton && sidebar) {
