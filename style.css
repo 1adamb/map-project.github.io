@@ -40,6 +40,7 @@ body {
   transform: translateX(calc(-100% + 42px));
 }
 
+
 .sidebar-header {
   padding: 20px;
   background: linear-gradient(90deg,rgba(255, 161, 33, 1) 71%, rgba(255, 251, 5, 1) 99%);
@@ -326,7 +327,9 @@ body {
 .info-content ul {
   list-style: none;
   padding: 0;
+  z-index: 2;
 }
+
 
 .info-content li {
   padding: 4px 0;

@@ -695,6 +695,7 @@ document.getElementById('languageSelect').addEventListener('change', async (even
 const mobileToggleButton = document.getElementById('mobileSidebarToggle');
 const mobileCloseButton = document.getElementById('mobileSidebarClose');
 const sidebar = document.getElementById('sidebar');
+let wasMobileLayout = window.matchMedia('(max-width: 768px)').matches;
 
 function updateSidebarCollapseState() {
   if (!mobileToggleButton || !sidebar) return;
@@ -736,7 +737,7 @@ function updateSidebarCollapseState() {
   }
   updateSidebarCollapseState();
 
-  mobileToggleButton.addEventListener('click', () => {
+  mobileCloseButton.addEventListener('click', () => {
     sidebar.classList.toggle('sidebar-collapsed');
     updateSidebarCollapseState();
   });
