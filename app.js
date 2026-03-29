@@ -162,6 +162,37 @@ const monumentMarkers = new Map();
 let currentLanguage = 'cs';
 let monumentsLoaded = false;
 
+function getMonumentRenderDistance(model = {}) {
+  if (typeof model.renderDistance === 'number') {
+    return model.renderDistance;
+  }
+
+  const minZoom = model.minZoom !== undefined ? model.minZoom : 8;
+  if (minZoom >= 14) return 6000;
+  if (minZoom >= 12) return 12000;
+  if (minZoom >= 10) return 25000;
+  return 50000;
+}
+
+function updateActiveMonuments() {
+  const mapCenter = map.getCenter();
+
+  monumentLayers.forEach(layer => {
+    const { location, model } = layer.monument;
+    const monumentPosition = new maplibregl.LngLat(location.longitude, location.latitude);
+    const distanceMeters = mapCenter.distanceTo(monumentPosition);
+    const renderDistance = getMonumentRenderDistance(model);
+
+    layer.shouldRender = distanceMeters <= renderDistance;
+
+    if (layer.shouldRender) {
+      layer.ensureModelLoaded();
+    }
+  });
+
+  map.triggerRepaint();
+}
+
 const i18n = {
   cs: {
     title: 'České Památky',
@@ -284,6 +315,11 @@ function createMonumentLayer(monument, monumentId) {
     type: 'custom',
     renderingMode: '3d',
     monument: monument, // Uložíme referenci na data památky
+    shouldRender: false,
+    isModelLoaded: false,
+    isModelLoading: false,
+    loader: null,
+    modelPath: null,
     
     onAdd(map, gl) {
       this.camera = new THREE.Camera();
@@ -306,27 +342,8 @@ function createMonumentLayer(monument, monumentId) {
       this.modelGroup = new THREE.Group();
       this.scene.add(this.modelGroup);
 
-      // Načtení 3D modelu
-      const loader = new GLTFLoader();
-      const modelPath = `monuments/${monumentId}/${monument.model.file}`;
-      
-      loader.load(
-        modelPath,
-        (gltf) => {
-          this.modelGroup.add(gltf.scene);
-          this.isModelLoaded = true;
-          console.log(`✅ Model loaded: ${monument.name}`);
-          updateStatus(t('loadedItem', monument.name), 'success');
-        },
-        (xhr) => {
-          const percent = Math.round((xhr.loaded / xhr.total) * 100);
-          console.log(`Loading ${monument.name}: ${percent}%`);
-        },
-        (error) => {
-          console.error(`❌ Error loading ${monument.name}:`, error);
-          updateStatus(t('loadError', monument.name), 'error');
-        }
-      );
+      this.loader = new GLTFLoader();
+      this.modelPath = `monuments/${monumentId}/${monument.model.file}`;
 
       this.map = map;
       this.renderer = new THREE.WebGLRenderer({
@@ -336,8 +353,36 @@ function createMonumentLayer(monument, monumentId) {
       });
       this.renderer.autoClear = false;
     },
+
+    ensureModelLoaded() {
+      if (this.isModelLoaded || this.isModelLoading || !this.loader || !this.modelPath) {
+        return;
+      }
+
+      this.isModelLoading = true;
+      this.loader.load(
+        this.modelPath,
+        (gltf) => {
+          this.modelGroup.add(gltf.scene);
+          this.isModelLoaded = true;
+          console.log(`✅ Model loaded: ${monument.name}`);
+          updateStatus(t('loadedItem', monument.name), 'success');
+        },
+        (xhr) => {
+          const percent = Math.round((xhr.loaded / xhr.total) * 100);
+          console.log(`Loading ${this.monument.name}: ${percent}%`);
+        },
+        (error) => {
+          this.isModelLoading = false;
+          console.error(`❌ Error loading ${this.monument.name}:`, error);
+          updateStatus(t('loadError', this.monument.name), 'error');
+        }
+      );
+    },
     
     render(gl, args) {
+      if (!this.shouldRender || !this.isModelLoaded) return;
+
       const { location, model } = this.monument;
 
       if (!this.isModelLoaded) {
@@ -395,7 +440,6 @@ function createMonumentLayer(monument, monumentId) {
       this.camera.projectionMatrix = m.multiply(l);
       this.renderer.resetState();
       this.renderer.render(this.scene, this.camera);
-      this.map.triggerRepaint();
     }
   };
 }
@@ -570,7 +614,13 @@ map.on('style.load', async () => {
   monumentLayers.forEach(layer => {
     map.addLayer(layer);
   });
+
+  updateActiveMonuments();
 });
+
+map.on('move', updateActiveMonuments);
+map.on('moveend', updateActiveMonuments);
+map.on('zoom', updateActiveMonuments);
 
 // Tlačítko pro reset kamery
 document.getElementById('resetView').addEventListener('click', () => {
