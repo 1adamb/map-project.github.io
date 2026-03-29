@@ -285,7 +285,7 @@ function applyTranslations() {
     }
   });
 
-  updateMobileSidebarState();
+  updateSidebarCollapseState();
 }
 
 async function fetchLocalizedJson(basePath) {
@@ -691,46 +691,57 @@ document.getElementById('languageSelect').addEventListener('change', async (even
   updateStatus(t('loadedCount', monuments.length), 'success');
 });
 
-// Mobilní ovládání bočního panelu
+// Ovládání bočního panelu
 const mobileToggleButton = document.getElementById('mobileSidebarToggle');
 const mobileCloseButton = document.getElementById('mobileSidebarClose');
 const sidebar = document.getElementById('sidebar');
+let wasMobileLayout = window.matchMedia('(max-width: 768px)').matches;
 
-function updateMobileSidebarState() {
-  if (!mobileToggleButton || !sidebar) return;
+function updateSidebarCollapseState() {
+  if (!sidebar || !mobileCloseButton) return;
 
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
-  if (!isMobile) {
-    sidebar.classList.remove('sidebar-collapsed');
-    mobileToggleButton.setAttribute('aria-expanded', 'true');
-    mobileToggleButton.textContent = t('openList');
-    return;
-  }
-
   const collapsed = sidebar.classList.contains('sidebar-collapsed');
-  mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
-  mobileToggleButton.textContent = collapsed ? t('openList') : t('hideList');
+  const arrow = isMobile ? (collapsed ? '▲' : '▼') : (collapsed ? '▶' : '◀');
+  const label = collapsed ? t('openList') : t('closeList');
+
+  mobileCloseButton.textContent = arrow;
+  mobileCloseButton.setAttribute('aria-label', label);
+  mobileCloseButton.setAttribute('title', label);
+  mobileCloseButton.setAttribute('aria-expanded', String(!collapsed));
+
+  if (mobileToggleButton) {
+    mobileToggleButton.style.display = 'none';
+  }
 }
 
-if (mobileToggleButton && sidebar) {
-  if (window.matchMedia('(max-width: 768px)').matches) {
-    sidebar.classList.add('sidebar-collapsed');
+function handleSidebarResize() {
+  if (!sidebar) return;
+
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  if (isMobile !== wasMobileLayout) {
+    sidebar.classList.remove('sidebar-collapsed');
+    if (isMobile) {
+      sidebar.classList.add('sidebar-collapsed');
+    }
+    wasMobileLayout = isMobile;
   }
-  updateMobileSidebarState();
 
-  mobileToggleButton.addEventListener('click', () => {
-    sidebar.classList.toggle('sidebar-collapsed');
-    updateMobileSidebarState();
-  });
-
-  window.addEventListener('resize', updateMobileSidebarState);
+  updateSidebarCollapseState();
 }
 
 if (mobileCloseButton && sidebar) {
-  mobileCloseButton.addEventListener('click', () => {
+  if (wasMobileLayout) {
     sidebar.classList.add('sidebar-collapsed');
-    updateMobileSidebarState();
+  }
+
+  mobileCloseButton.addEventListener('click', () => {
+    sidebar.classList.toggle('sidebar-collapsed');
+    updateSidebarCollapseState();
   });
+
+  window.addEventListener('resize', handleSidebarResize);
+  updateSidebarCollapseState();
 }
 
 applyTranslations();

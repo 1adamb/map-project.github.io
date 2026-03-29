@@ -33,7 +33,10 @@ body {
   display: flex;
   flex-direction: column;
   z-index: 1000;
+  transition: transform 0.25s ease;
+  overflow: visible;
 }
+
 
 .sidebar-header {
   padding: 20px;
@@ -52,6 +55,62 @@ body {
   font-size: 13px;
   opacity: 0.9;
   margin: 0;
+}
+
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-select,
+#mapStyle {
+  color: #333;
+}
+
+.mobile-sidebar-close {
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-weight: 700;
+  padding: 8px 10px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.mobile-sidebar-close:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.mobile-sidebar-close {
+  position: absolute;
+  top: 20px;
+  right: -42px;
+  width: 42px;
+  height: 42px;
+  border-radius: 0 10px 10px 0;
+  background: linear-gradient(180deg, rgba(255, 161, 33, 1) 0%, rgba(255, 251, 5, 1) 100%);
+  color: #333;
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  padding: 0;
+  z-index: 2;
+}
+
+
+@media (min-width: 769px) {
+  .sidebar.sidebar-collapsed {
+    transform: translateX(calc(-100% + 42px));
+  }
 }
 
 /* Map style selector */
@@ -263,7 +322,9 @@ body {
 .info-content ul {
   list-style: none;
   padding: 0;
+  z-index: 2;
 }
+
 
 .info-content li {
   padding: 4px 0;
@@ -304,19 +365,7 @@ body {
   }
 
   .mobile-sidebar-toggle {
-    display: block;
-    position: absolute;
-    left: 50%;
-    bottom: calc(42vh + env(safe-area-inset-bottom, 0px) + 10px);
-    transform: translateX(-50%);
-    z-index: 1100;
-    border: none;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.95);
-    color: #333;
-    font-weight: 600;
-    padding: 10px 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: none !important;
   }
 
   .sidebar {
@@ -325,7 +374,6 @@ body {
     top: auto;
     bottom: 0;
     border-radius: 20px 20px 0 0;
-    transition: transform 0.25s ease;
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
@@ -343,7 +391,17 @@ body {
   .sidebar.sidebar-collapsed .sidebar-header {
     padding: 14px 20px;
   }
-  
+
+  .mobile-sidebar-close {
+    top: -20px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    width: 40px;
+    height: 40px;
+  }
+
   .info-panel {
     display: none;
   }
