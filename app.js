@@ -691,7 +691,7 @@ document.getElementById('languageSelect').addEventListener('change', async (even
   updateStatus(t('loadedCount', monuments.length), 'success');
 });
 
-// Mobilní ovládání bočního panelu
+// Ovládání bočního panelu
 const mobileToggleButton = document.getElementById('mobileSidebarToggle');
 const mobileCloseButton = document.getElementById('mobileSidebarClose');
 const sidebar = document.getElementById('sidebar');
@@ -753,6 +753,9 @@ if (mobileCloseButton && sidebar) {
     }
     updateSidebarCollapseState();
   });
+
+  window.addEventListener('resize', updateSidebarCollapseState);
+  updateSidebarCollapseState();
 }
 
 applyTranslations();

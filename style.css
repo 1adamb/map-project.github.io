@@ -33,6 +33,11 @@ body {
   display: flex;
   flex-direction: column;
   z-index: 1000;
+  transition: transform 0.25s ease;
+}
+
+.sidebar.sidebar-collapsed {
+  transform: translateX(calc(-100% + 42px));
 }
 
 .sidebar-header {
@@ -373,46 +378,21 @@ body {
   }
 
   .mobile-sidebar-toggle {
-    display: block;
-    position: absolute;
-    left: 50%;
-    bottom: calc(42vh + env(safe-area-inset-bottom, 0px) + 10px);
-    transform: translateX(-50%);
-    z-index: 1100;
-    border: none;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.95);
-    color: #333;
-    font-weight: 600;
-    padding: 10px 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: none !important;
   }
 
   .sidebar {
-    width: 100%;
-    height: min(72vh, 560px);
-    top: auto;
-    bottom: 0;
-    border-radius: 20px 20px 0 0;
-    transition: transform 0.25s ease;
+    width: min(85vw, 350px);
+    height: 100dvh;
+    border-radius: 0;
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  .sidebar.sidebar-collapsed {
-    transform: translateY(calc(100% - 56px));
+  .mobile-sidebar-close {
+    top: 14px;
+    right: -42px;
   }
 
-  .sidebar.sidebar-collapsed .monuments-container,
-  .sidebar.sidebar-collapsed .sidebar-footer,
-  .sidebar.sidebar-collapsed .map-style-selector,
-  .sidebar.sidebar-collapsed .search-box {
-    display: none;
-  }
-
-  .sidebar.sidebar-collapsed .sidebar-header {
-    padding: 14px 20px;
-  }
-  
   .info-panel {
     display: none;
   }
