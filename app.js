@@ -251,6 +251,22 @@ function t(key, ...args) {
   return typeof entry === 'function' ? entry(...args) : entry;
 }
 
+function getDistanceMeters(lon1, lat1, lon2, lat2) {
+  const toRad = (deg) => deg * Math.PI / 180;
+  const earthRadius = 6371000; // meters
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const lat1Rad = toRad(lat1);
+  const lat2Rad = toRad(lat2);
+
+  const a = Math.sin(dLat / 2) ** 2
+    + Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return earthRadius * c;
+}
+
 function applyTranslations() {
   document.documentElement.lang = currentLanguage;
   document.querySelectorAll('[data-i18n]').forEach(element => {
@@ -308,6 +324,8 @@ function createMonumentLayer(monument, monumentId) {
     onAdd(map, gl) {
       this.camera = new THREE.Camera();
       this.scene = new THREE.Scene();
+      this.isModelLoaded = false;
+      this.isWithinVisibleDistance = false;
 
       // Osvětlení
       const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -347,10 +365,8 @@ function createMonumentLayer(monument, monumentId) {
         (gltf) => {
           this.modelGroup.add(gltf.scene);
           this.isModelLoaded = true;
-          this.isModelLoading = false;
-          console.log(`✅ Model loaded: ${this.monument.name}`);
-          updateStatus(t('loadedItem', this.monument.name), 'success');
-          this.map.triggerRepaint();
+          console.log(`✅ Model loaded: ${monument.name}`);
+          updateStatus(t('loadedItem', monument.name), 'success');
         },
         (xhr) => {
           const percent = Math.round((xhr.loaded / xhr.total) * 100);
@@ -368,7 +384,40 @@ function createMonumentLayer(monument, monumentId) {
       if (!this.shouldRender || !this.isModelLoaded) return;
 
       const { location, model } = this.monument;
-      
+
+      if (!this.isModelLoaded) {
+        return;
+      }
+
+      const currentZoom = map.getZoom();
+      const minZoom = model.minZoom !== undefined ? model.minZoom : 8;
+      const visibleDistance = model.visibleDistance !== undefined ? model.visibleDistance : Infinity;
+      const unloadDistance = model.unloadDistance !== undefined
+        ? Math.max(model.unloadDistance, visibleDistance)
+        : null;
+      const cameraCenter = map.getCenter();
+      const distanceToMonument = getDistanceMeters(
+        cameraCenter.lng,
+        cameraCenter.lat,
+        location.longitude,
+        location.latitude
+      );
+
+      if (unloadDistance !== null) {
+        if (!this.isWithinVisibleDistance && distanceToMonument <= visibleDistance) {
+          this.isWithinVisibleDistance = true;
+        } else if (this.isWithinVisibleDistance && distanceToMonument > unloadDistance) {
+          this.isWithinVisibleDistance = false;
+        }
+      } else {
+        this.isWithinVisibleDistance = distanceToMonument <= visibleDistance;
+      }
+
+      const passesZoomGuard = currentZoom >= minZoom;
+      if (!this.isWithinVisibleDistance || !passesZoomGuard) {
+        return;
+      }
+
       // Get terrain elevation at this point to fix altitude bug
       let terrainElevation = 0;
       if (map.getTerrain()) {
