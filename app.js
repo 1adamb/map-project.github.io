@@ -285,7 +285,7 @@ function applyTranslations() {
     }
   });
 
-  updateMobileSidebarState();
+  updateSidebarCollapseState();
 }
 
 async function fetchLocalizedJson(basePath) {
@@ -691,46 +691,37 @@ document.getElementById('languageSelect').addEventListener('change', async (even
   updateStatus(t('loadedCount', monuments.length), 'success');
 });
 
-// Mobilní ovládání bočního panelu
+// Ovládání bočního panelu
 const mobileToggleButton = document.getElementById('mobileSidebarToggle');
 const mobileCloseButton = document.getElementById('mobileSidebarClose');
 const sidebar = document.getElementById('sidebar');
 
-function updateMobileSidebarState() {
-  if (!mobileToggleButton || !sidebar) return;
-
-  const isMobile = window.matchMedia('(max-width: 768px)').matches;
-  if (!isMobile) {
-    sidebar.classList.remove('sidebar-collapsed');
-    mobileToggleButton.setAttribute('aria-expanded', 'true');
-    mobileToggleButton.textContent = t('openList');
-    return;
-  }
+function updateSidebarCollapseState() {
+  if (!sidebar || !mobileCloseButton) return;
 
   const collapsed = sidebar.classList.contains('sidebar-collapsed');
-  mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
-  mobileToggleButton.textContent = collapsed ? t('openList') : t('hideList');
-}
+  const isMobile = window.matchMedia('(max-width: 768px)').matches;
+  const arrow = isMobile ? (collapsed ? '▲' : '▼') : (collapsed ? '▶' : '◀');
+  const label = collapsed ? t('openList') : t('closeList');
 
-if (mobileToggleButton && sidebar) {
-  if (window.matchMedia('(max-width: 768px)').matches) {
-    sidebar.classList.add('sidebar-collapsed');
+  mobileCloseButton.textContent = arrow;
+  mobileCloseButton.setAttribute('aria-label', label);
+  mobileCloseButton.setAttribute('title', label);
+
+  if (mobileToggleButton) {
+    mobileToggleButton.style.display = 'none';
+    mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
   }
-  updateMobileSidebarState();
-
-  mobileToggleButton.addEventListener('click', () => {
-    sidebar.classList.toggle('sidebar-collapsed');
-    updateMobileSidebarState();
-  });
-
-  window.addEventListener('resize', updateMobileSidebarState);
 }
 
 if (mobileCloseButton && sidebar) {
   mobileCloseButton.addEventListener('click', () => {
-    sidebar.classList.add('sidebar-collapsed');
-    updateMobileSidebarState();
+    sidebar.classList.toggle('sidebar-collapsed');
+    updateSidebarCollapseState();
   });
+
+  window.addEventListener('resize', updateSidebarCollapseState);
+  updateSidebarCollapseState();
 }
 
 applyTranslations();
