@@ -699,6 +699,7 @@ const sidebar = document.getElementById('sidebar');
 function updateSidebarCollapseState() {
   if (!mobileToggleButton || !sidebar) return;
 
+  const collapsed = sidebar.classList.contains('sidebar-collapsed');
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
   if (isMobile) {
@@ -729,9 +730,9 @@ function updateSidebarCollapseState() {
   }
 }
 
-if (mobileToggleButton && sidebar) {
-  if (window.matchMedia('(max-width: 768px)').matches) {
-    sidebar.classList.add('sidebar-collapsed');
+  if (mobileToggleButton) {
+    mobileToggleButton.style.display = 'none';
+    mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
   }
   updateSidebarCollapseState();
 
