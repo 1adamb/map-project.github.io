@@ -731,18 +731,14 @@ function updateSidebarCollapseState() {
   }
 }
 
-  if (mobileToggleButton) {
-    mobileToggleButton.style.display = 'none';
-    mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
-  }
-  updateSidebarCollapseState();
-
-  mobileCloseButton.addEventListener('click', () => {
+if (mobileToggleButton && sidebar) {
+  mobileToggleButton.addEventListener('click', () => {
     sidebar.classList.toggle('sidebar-collapsed');
     updateSidebarCollapseState();
   });
 
   window.addEventListener('resize', updateSidebarCollapseState);
+  updateSidebarCollapseState();
 }
 
 if (mobileCloseButton && sidebar) {
