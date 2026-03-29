@@ -160,6 +160,7 @@ const monuments = [];
 const monumentLayers = new Map();
 const monumentMarkers = new Map();
 let currentLanguage = 'cs';
+let monumentsLoaded = false;
 
 const i18n = {
   cs: {
@@ -219,7 +220,47 @@ function t(key, ...args) {
   return typeof entry === 'function' ? entry(...args) : entry;
 }
 
-let monumentsLoaded = false;
+function applyTranslations() {
+  document.documentElement.lang = currentLanguage;
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.dataset.i18n;
+    const translation = t(key);
+    if (translation) {
+      element.textContent = translation;
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+    const key = element.dataset.i18nPlaceholder;
+    const translation = t(key);
+    if (translation) {
+      element.placeholder = translation;
+    }
+  });
+
+  updateMobileSidebarState();
+}
+
+async function fetchLocalizedJson(basePath) {
+  const localizedPath = `${basePath}.${currentLanguage}.json`;
+  const fallbackPath = `${basePath}.json`;
+
+  try {
+    const localizedResponse = await fetch(localizedPath);
+    if (localizedResponse.ok) {
+      return await localizedResponse.json();
+    }
+  } catch (error) {
+    console.warn(`⚠️ Localized file not available: ${localizedPath}`, error);
+  }
+
+  const fallbackResponse = await fetch(fallbackPath);
+  if (!fallbackResponse.ok) {
+    throw new Error(`HTTP error! status: ${fallbackResponse.status} (${fallbackPath})`);
+  }
+  return await fallbackResponse.json();
+}
+
 // Funkce pro vytvoření 3D vrstvy pro památku
 function createMonumentLayer(monument, monumentId) {
   return {
@@ -363,12 +404,7 @@ async function loadMonuments() {
     updateStatus(t('loadingListStatus'), 'info');
     
     // Načtení hlavního souboru se seznamem památek
-    const response = await fetch('monuments/monuments.json');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
+    const data = await fetchLocalizedJson('monuments/monuments');
     const monumentIds = data.monuments;
     
     updateStatus(t('foundCount', monumentIds.length), 'info');
@@ -376,13 +412,7 @@ async function loadMonuments() {
     // Načtení konfigurace každé památky
     for (const monumentId of monumentIds) {
       try {
-        const configResponse = await fetch(`monuments/${monumentId}/config.json`);
-        if (!configResponse.ok) {
-          console.warn(`⚠️ Skipping ${monumentId}: config not found`);
-          continue;
-        }
-        
-        const config = await configResponse.json();
+        const config = await fetchLocalizedJson(`monuments/${monumentId}/config`);
         monuments.push({ id: monumentId, ...config });
         
         // Vytvoření 3D vrstvy a markeru pro památku
@@ -406,6 +436,41 @@ async function loadMonuments() {
     console.error('❌ Error loading monuments:', error);
     updateStatus(t('listLoadError'), 'error');
   }
+}
+
+function rebuildMonumentMarkers() {
+  monumentMarkers.forEach(marker => marker.remove());
+  monumentMarkers.clear();
+
+  monuments.forEach(monument => {
+    const marker = createMonumentMarker(monument, monument.id);
+    monumentMarkers.set(monument.id, marker);
+  });
+}
+
+async function reloadMonumentLocalization() {
+  if (!monumentsLoaded) return;
+
+  for (let i = 0; i < monuments.length; i++) {
+    const monumentId = monuments[i].id;
+    try {
+      const localizedConfig = await fetchLocalizedJson(`monuments/${monumentId}/config`);
+      monuments[i] = { id: monumentId, ...localizedConfig };
+    } catch (error) {
+      console.error(`❌ Error loading localized config for ${monumentId}:`, error);
+    }
+  }
+
+  monumentLayers.forEach(layer => {
+    const monumentId = layer.id.replace('monument-', '');
+    const updatedMonument = monuments.find(monument => monument.id === monumentId);
+    if (updatedMonument) {
+      layer.monument = updatedMonument;
+    }
+  });
+
+  rebuildMonumentMarkers();
+  updateMonumentsList();
 }
 
 // Aktualizace seznamu památek v UI
@@ -527,8 +592,16 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
   });
 });
 
+document.getElementById('languageSelect').addEventListener('change', async (event) => {
+  currentLanguage = event.target.value;
+  applyTranslations();
+  await reloadMonumentLocalization();
+  updateStatus(t('loadedCount', monuments.length), 'success');
+});
+
 // Mobilní ovládání bočního panelu
 const mobileToggleButton = document.getElementById('mobileSidebarToggle');
+const mobileCloseButton = document.getElementById('mobileSidebarClose');
 const sidebar = document.getElementById('sidebar');
 
 function updateMobileSidebarState() {
@@ -538,13 +611,13 @@ function updateMobileSidebarState() {
   if (!isMobile) {
     sidebar.classList.remove('sidebar-collapsed');
     mobileToggleButton.setAttribute('aria-expanded', 'true');
-    mobileToggleButton.textContent = 'Seznam památek';
+    mobileToggleButton.textContent = t('openList');
     return;
   }
 
   const collapsed = sidebar.classList.contains('sidebar-collapsed');
   mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
-  mobileToggleButton.textContent = collapsed ? 'Otevřít seznam' : 'Skrýt seznam';
+  mobileToggleButton.textContent = collapsed ? t('openList') : t('hideList');
 }
 
 if (mobileToggleButton && sidebar) {
@@ -560,3 +633,12 @@ if (mobileToggleButton && sidebar) {
 
   window.addEventListener('resize', updateMobileSidebarState);
 }
+
+if (mobileCloseButton && sidebar) {
+  mobileCloseButton.addEventListener('click', () => {
+    sidebar.classList.add('sidebar-collapsed');
+    updateMobileSidebarState();
+  });
+}
+
+applyTranslations();

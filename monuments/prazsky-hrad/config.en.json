@@ -1,0 +1,22 @@
+{
+  "name": "Prague Castle",
+  "description": "The most important Czech castle and a symbol of statehood, founded around 880 by Prince Bořivoj of the Přemyslid dynasty. It is listed in the Guinness World Records as the largest coherent castle complex in the world and serves as the seat of Czech kings, emperors, and presidents.",
+  "location": {
+    "longitude": 14.40032,
+    "latitude": 50.09058,
+    "altitude": 20
+  },
+  "model": {
+    "file": "prazsky-hrad-model-decimated.glb",
+    "scale": 26,
+    "rotation": 16,
+    "downloadable": false,
+    "minZoom": 10
+  },
+  "info": {
+    "category": "castle / UNESCO monument",
+    "region": "Prague",
+    "year": "880 (founded)",
+    "website": "https://www.hrad.cz"
+  }
+}

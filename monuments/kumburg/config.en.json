@@ -1,0 +1,22 @@
+{
+  "name": "Kumburk Castle Ruins",
+  "description": "A picturesque ruin of a 14th-century Gothic castle towering above Syřenov on a basalt hill. The castle was known for its strong defenses and unique fortification system. It was partially demolished by imperial order in the 17th century so it could not be used by enemies. Today it offers one of the most beautiful views of Bohemian Paradise and the Krkonoše Mountains.",
+  "location": {
+    "longitude": 15.44438,
+    "latitude": 50.4943,
+    "altitude": -55
+  },
+  "model": {
+    "file": "Kumburg.glb",
+    "scale": 80,
+    "rotation": 40,
+    "downloadable": false,
+    "minZoom": 10
+  },
+  "info": {
+    "category": "castle ruin",
+    "region": "Hradec Králové Region",
+    "year": "1325",
+    "website": "https://www.kumburk.cz"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Monument Name",
+  "description": "Detailed monument description, including its history and significance.",
+  "location": {
+    "longitude": 14.1234,
+    "latitude": 50.5678,
+    "altitude": 0
+  },
+  "model": {
+    "file": "model.gltf",
+    "scale": 15000,
+    "rotation": 0
+  },
+  "info": {
+    "category": "castle",
+    "region": "Central Bohemian Region",
+    "year": "1348",
+    "website": "https://www.example.cz"
+  }
+}

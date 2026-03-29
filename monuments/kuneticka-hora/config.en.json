@@ -1,0 +1,22 @@
+{
+  "name": "Kunětická hora State Castle",
+  "description": "A dominant late-Gothic castle standing on an isolated phonolite hill in the Elbe lowlands. It was significantly rebuilt by the Pernštejn family at the turn of the 15th and 16th centuries, resulting in a unique fortification system with artillery rondels. In the 20th century it was restored under architect Dušan Jurkovič and is also known as a filming location from the Arabela TV series.",
+  "location": {
+    "longitude": 15.8128,
+    "latitude": 50.0804,
+    "altitude": -50
+  },
+  "model": {
+    "file": "model-kuneticka-hora.glb",
+    "scale": 40,
+    "rotation": 100,
+    "downloadable": false,
+    "minZoom": 10
+  },
+  "info": {
+    "category": "castle / national cultural monument",
+    "region": "Pardubice Region",
+    "year": "1421",
+    "website": "https://www.hrad-kunetickahora.cz"
+  }
+}
