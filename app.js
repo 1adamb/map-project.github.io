@@ -267,6 +267,14 @@ function getDistanceMeters(lon1, lat1, lon2, lat2) {
   return earthRadius * c;
 }
 
+function updateLanguageButtons() {
+  document.querySelectorAll('.lang-btn').forEach(button => {
+    const isActive = button.dataset.lang === currentLanguage;
+    button.classList.toggle('is-active', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
 function applyTranslations() {
   document.documentElement.lang = currentLanguage;
   document.querySelectorAll('[data-i18n]').forEach(element => {
@@ -684,11 +692,17 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
   });
 });
 
-document.getElementById('languageSelect').addEventListener('change', async (event) => {
-  currentLanguage = event.target.value;
-  applyTranslations();
-  await reloadMonumentLocalization();
-  updateStatus(t('loadedCount', monuments.length), 'success');
+document.querySelectorAll('.lang-btn').forEach(button => {
+  button.addEventListener('click', async (event) => {
+    const selectedLanguage = event.currentTarget.dataset.lang;
+    if (!selectedLanguage || selectedLanguage === currentLanguage) return;
+
+    currentLanguage = selectedLanguage;
+    applyTranslations();
+    updateLanguageButtons();
+    await reloadMonumentLocalization();
+    updateStatus(t('loadedCount', monuments.length), 'success');
+  });
 });
 
 // Ovládání bočního panelu
@@ -758,3 +772,4 @@ if (mobileCloseButton && sidebar) {
 }
 
 applyTranslations();
+updateLanguageButtons();

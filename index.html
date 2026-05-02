@@ -34,10 +34,10 @@
                 <p class="subtitle" data-i18n="subtitle">3D pohled na památky</p>
             </div>
             <div class="header-controls">
-                <select id="languageSelect" class="language-select" aria-label="Language">
-                    <option value="cs" selected>CZ</option>
-                    <option value="en">EN</option>
-                </select>
+                <div class="language-switcher" role="group" aria-label="Language switcher">
+                    <button type="button" class="lang-btn is-active" data-lang="cs" aria-label="Čeština">🇨🇿</button>
+                    <button type="button" class="lang-btn" data-lang="en" aria-label="English">🇬🇧</button>
+                </div>
                 <button id="mobileSidebarClose" class="mobile-sidebar-close" type="button" >◀</button>
             </div>
         </div>
