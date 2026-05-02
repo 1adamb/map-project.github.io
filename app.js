@@ -746,7 +746,7 @@ if (mobileCloseButton && sidebar) {
   mobileCloseButton.addEventListener('click', () => {
     const isMobile = window.matchMedia('(max-width: 768px)').matches;
     if (isMobile) {
-      sidebar.classList.add('sidebar-collapsed');
+      sidebar.classList.toggle('sidebar-collapsed');
     } else {
       sidebar.classList.toggle('sidebar-collapsed-desktop');
     }
