@@ -333,6 +333,7 @@ function createMonumentLayer(monument, monumentId) {
       this.camera = new THREE.Camera();
       this.scene = new THREE.Scene();
       this.isModelLoaded = false;
+      this.isModelLoading = false;
       this.isWithinVisibleDistance = false;
 
       // Osvětlení
@@ -373,6 +374,7 @@ function createMonumentLayer(monument, monumentId) {
         (gltf) => {
           this.modelGroup.add(gltf.scene);
           this.isModelLoaded = true;
+          this.isModelLoading = false;
           console.log(`✅ Model loaded: ${monument.name}`);
           updateStatus(t('loadedItem', monument.name), 'success');
         },
@@ -673,6 +675,7 @@ document.getElementById('mapStyle').addEventListener('change', (e) => {
       }
     });
     
+    updateActiveMonuments();
     updateStatus(t('mapStyleChanged', selectedStyle), 'success');
   });
 });
