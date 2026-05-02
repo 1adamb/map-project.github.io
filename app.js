@@ -159,7 +159,7 @@ map.addControl(
 const monuments = [];
 const monumentLayers = new Map();
 const monumentMarkers = new Map();
-let currentLanguage = 'cs';
+let currentLanguage = 'en';
 let monumentsLoaded = false;
 
 function getMonumentRenderDistance(model = {}) {
