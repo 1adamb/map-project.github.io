@@ -707,12 +707,13 @@ function updateSidebarCollapseState() {
     sidebar.classList.remove('sidebar-collapsed-desktop');
     const collapsed = sidebar.classList.contains('sidebar-collapsed');
     mobileToggleButton.setAttribute('aria-expanded', String(!collapsed));
-    mobileToggleButton.textContent = collapsed ? t('openList') : t('hideList');
 
     if (mobileCloseButton) {
-      mobileCloseButton.textContent = t('closeList');
-      mobileCloseButton.setAttribute('aria-label', t('closeList'));
-      mobileCloseButton.setAttribute('title', t('closeList'));
+      const arrow = collapsed ? '▲' : '▼';
+      const label = collapsed ? t('openList') : t('closeList');
+      mobileCloseButton.textContent = arrow;
+      mobileCloseButton.setAttribute('aria-label', label);
+      mobileCloseButton.setAttribute('title', label);
     }
     return;
   }
