@@ -8,9 +8,9 @@
   },
   "model": {
     "file": "Pannonhalmské arciopatství.glb",
-    "scale": 50,
+    "scale": 100,
     "rotation": 0,
-    "downloadable": false,
+    "downloadable": true,
     "minZoom": 10
   },
   "info": {
