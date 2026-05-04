@@ -2,9 +2,9 @@
   "name": "Archabbey of Pannonhalma",
   "description": "A Benedictine archabbey in Pannonhalma, Hungary, founded in 996. It is one of Central Europe's most important ecclesiastical and cultural monuments and is listed as a UNESCO World Heritage Site.",
   "location": {
-    "longitude": 17.7604,
-    "latitude": 47.5495,
-    "altitude": 0
+    "longitude": 17.7611,
+    "latitude": 47.5526,
+    "altitude": 20
   },
   "model": {
     "file": "Pannonhalmské arciopatství.glb",
