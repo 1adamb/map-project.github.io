@@ -1,0 +1,22 @@
+{
+  "name": "Pannonhalmské arciopatství",
+  "description": "Benediktinské arciopatství v maďarské Pannonhalmě, založené v roce 996. Patří mezi nejvýznamnější církevní a kulturní památky střední Evropy a je zapsané na seznamu UNESCO.",
+  "location": {
+    "longitude": 17.7604,
+    "latitude": 47.5495,
+    "altitude": 0
+  },
+  "model": {
+    "file": "Pannonhalmské arciopatství.glb",
+    "scale": 50,
+    "rotation": 0,
+    "downloadable": false,
+    "minZoom": 10
+  },
+  "info": {
+    "category": "klášter",
+    "region": "Győr-Moson-Sopron",
+    "year": "996",
+    "website": "https://bences.hu"
+  }
+}
