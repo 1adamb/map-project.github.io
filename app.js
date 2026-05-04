@@ -265,7 +265,12 @@ function getDistanceMeters(lon1, lat1, lon2, lat2) {
   return earthRadius * c;
 }
 
-function updateLanguageButtons() {
+function syncLanguageControls() {
+  const languageSelect = document.getElementById('languageSelect');
+  if (languageSelect) {
+    languageSelect.value = currentLanguage;
+  }
+
   document.querySelectorAll('.lang-btn').forEach(button => {
     const isActive = button.dataset.lang === currentLanguage;
     button.classList.toggle('is-active', isActive);
@@ -682,18 +687,19 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
   });
 });
 
-document.querySelectorAll('.lang-btn').forEach(button => {
-  button.addEventListener('click', async (event) => {
-    const selectedLanguage = event.currentTarget.dataset.lang;
+const languageSelect = document.getElementById('languageSelect');
+if (languageSelect) {
+  languageSelect.addEventListener('change', async (event) => {
+    const selectedLanguage = event.target.value;
     if (!selectedLanguage || selectedLanguage === currentLanguage) return;
 
     currentLanguage = selectedLanguage;
     applyTranslations();
-    updateLanguageButtons();
+    syncLanguageControls();
     await reloadMonumentLocalization();
     updateStatus(t('loadedCount', monuments.length), 'success');
   });
-});
+}
 
 // Ovládání bočního panelu
 const mobileToggleButton = document.getElementById('mobileSidebarToggle');
@@ -762,4 +768,4 @@ if (mobileCloseButton && sidebar) {
 }
 
 applyTranslations();
-updateLanguageButtons();
+syncLanguageControls();
