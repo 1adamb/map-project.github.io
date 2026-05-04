@@ -202,7 +202,6 @@ const i18n = {
     mapStyleSatellite: 'Satelitní',
     searchPlaceholder: 'Hledat památku...',
     loadingMonuments: 'Načítání památek...',
-    resetView: 'Reset pohledu',
     closeList: 'Skrýt',
     openList: 'Otevřít seznam',
     hideList: 'Skrýt seznam',
@@ -227,7 +226,6 @@ const i18n = {
     mapStyleSatellite: 'Satellite',
     searchPlaceholder: 'Search monument...',
     loadingMonuments: 'Loading monuments...',
-    resetView: 'Reset view',
     closeList: 'Hide',
     openList: 'Open list',
     hideList: 'Hide list',
@@ -631,17 +629,6 @@ map.on('style.load', async () => {
 map.on('move', updateActiveMonuments);
 map.on('moveend', updateActiveMonuments);
 map.on('zoom', updateActiveMonuments);
-
-// Tlačítko pro reset kamery
-document.getElementById('resetView').addEventListener('click', () => {
-  map.flyTo({
-    center: [15.5, 49.8],
-    zoom: 7,
-    pitch: 0,
-    bearing: 0,
-    duration: 2000
-  });
-});
 
 // Přepínání stylu mapy
 document.getElementById('mapStyle').addEventListener('change', (e) => {

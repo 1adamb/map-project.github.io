@@ -284,29 +284,6 @@ body {
   border-top: 1px solid #e0e0e0;
 }
 
-.btn-reset {
-  width: 100%;
-  padding: 12px;
-  background: linear-gradient(90deg,rgba(255, 161, 33, 1) 71%, rgba(255, 251, 5, 1) 99%);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 5px rgba(102, 126, 234, 0.3);
-}
-
-.btn-reset:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-.btn-reset:active {
-  transform: translateY(0);
-}
-
 /* Status zprávy */
 .status {
   margin-top: 10px;
