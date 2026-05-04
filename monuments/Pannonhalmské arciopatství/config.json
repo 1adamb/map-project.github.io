@@ -2,9 +2,9 @@
   "name": "Pannonhalmské arciopatství",
   "description": "Benediktinské arciopatství v maďarské Pannonhalmě, založené v roce 996. Patří mezi nejvýznamnější církevní a kulturní památky střední Evropy a je zapsané na seznamu UNESCO.",
   "location": {
-    "longitude": 17.7604,
-    "latitude": 47.5495,
-    "altitude": 0
+    "longitude": 17.7611,
+    "latitude": 47.5526,
+    "altitude": 20
   },
   "model": {
     "file": "Pannonhalmské arciopatství.glb",
